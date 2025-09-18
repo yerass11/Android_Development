@@ -1,2 +1,2 @@
 # Instagram Clone UI
-![screenshot](screenshot.png)
+<img src="screenshot.png" alt="Screenshot" width="50%"/>
