@@ -10,11 +10,28 @@ import com.example.assignment1.databinding.ItemPostBinding
 
 class PostAdapter(
     private val posts: List<Post>,
-    private val onLikeClick: (Int) -> Unit
+    private val onPostClick: (Post) -> Unit
 ) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     inner class PostViewHolder(val binding: ItemPostBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(post: Post) {
+            binding.tvUsername.text = post.username
+
+            binding.tvCaption.text = post.caption
+
+            binding.tvLikes.text = "${post.likes} likes"
+
+            Glide.with(binding.imgPost.context)
+                .load(post.imageRes)
+                .into(binding.imgPost)
+
+            binding.root.setOnClickListener {
+                onPostClick(post)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -22,37 +39,7 @@ class PostAdapter(
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        val post = posts[position]
-        with(holder.binding) {
-            tvUsername.text = post.username
-            tvCaption.text = post.caption
-            tvLikes.text = "${post.likes} likes"
-
-            Glide.with(root.context)
-                .load(post.imageRes)
-                .into(imgPost)
-
-            btnLike.setImageResource(
-                if (post.isLiked) R.drawable.ic_like_filled else R.drawable.ic_like
-            )
-
-            btnLike.setOnClickListener { onLikeClick(post.id) }
-
-            val gestureDetector = GestureDetector(root.context,
-                object : GestureDetector.SimpleOnGestureListener() {
-                    override fun onDoubleTap(e: MotionEvent): Boolean {
-                        if (!post.isLiked) {
-                            onLikeClick(post.id)
-                        }
-                        return true
-                    }
-                })
-
-            imgPost.setOnTouchListener { _, event ->
-                gestureDetector.onTouchEvent(event)
-                true
-            }
-        }
+        holder.bind(posts[position])
     }
 
     override fun getItemCount() = posts.size
