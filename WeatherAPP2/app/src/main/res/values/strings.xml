@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WeatherAPP</string>
+    <string name="weather_text">City: %s, Temp: %.1f°C</string>
+</resources>
